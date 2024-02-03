@@ -18,9 +18,9 @@ func TestAccBitbucketDataApplicationProperties(t *testing.T) {
 			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "version", "6.10.0"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "build_number", "6010000"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "build_date", "1578626301641"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "version", "8.5.4"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "build_number", "8005004"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "build_date", "1681201969213"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_application_properties.main", "display_name", "Bitbucket"),
 				),
 			},
