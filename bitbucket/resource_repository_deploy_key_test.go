@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccBitbucketResourceRepositoryDeployKey(t *testing.T) {
@@ -32,8 +32,8 @@ func TestAccBitbucketResourceRepositoryDeployKey(t *testing.T) {
 		}
 	`, projectKey, projectKey)
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,

@@ -3,9 +3,10 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"net/url"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type PaginatedGroupUsersValue struct {
@@ -95,7 +96,7 @@ func dataSourceGroupUsersRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func readGroupUsers(m interface{}, group string, filter string) ([]GroupUser, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/admin/groups/more-members?context=%s&limit=100",
 		url.QueryEscape(group),

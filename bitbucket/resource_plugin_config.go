@@ -3,9 +3,10 @@ package bitbucket
 import (
 	"bytes"
 	"encoding/json"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type PluginConfig struct {
@@ -39,7 +40,7 @@ func resourcePluginConfig() *schema.Resource {
 }
 
 func resourcePluginConfigCreateOrUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	configEndpoint := d.Get("config_endpoint").(string)
 	values := d.Get("values").(string)
 	config := []byte(values)
@@ -86,7 +87,7 @@ func resourcePluginConfigDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func readPluginConfig(m interface{}, configEndpoint string) (PluginConfig, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	resp, err := client.Get(configEndpoint)
 	if err != nil {
 		return PluginConfig{}, err

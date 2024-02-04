@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 type BranchPermissionPayload struct {
@@ -152,7 +153,7 @@ func newBranchPermissionPayloadFromResource(d *schema.ResourceData) *BranchPermi
 }
 
 func resourceBranchPermissionsCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	project := d.Get("project").(string)
 	repository := d.Get("repository").(string)
@@ -234,7 +235,7 @@ func getBranchPermissionById(d *schema.ResourceData, m interface{}) error {
 	repository := d.Get("repository").(string)
 	id := d.Get("permission_id").(int)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(fmt.Sprintf("/rest/branch-permissions/2.0/projects/%s/repos/%s/restrictions/%d",
 		project,
@@ -282,7 +283,7 @@ func getBranchPermissionFromList(d *schema.ResourceData, m interface{}) error {
 	repository := d.Get("repository").(string)
 	restrictionType := d.Get("type").(string)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(fmt.Sprintf("/rest/branch-permissions/2.0/projects/%s/repos/%s/restrictions",
 		project,
@@ -331,7 +332,7 @@ func getBranchPermissionFromList(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceBranchPermissionsDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/branch-permissions/2.0/projects/%s/repos/%s/restrictions/%d",
 		d.Get("project").(string),
 		d.Get("repository").(string),

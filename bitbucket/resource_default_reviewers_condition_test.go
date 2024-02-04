@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccBitbucketDefaultReviewersCondition_forProject(t *testing.T) {
@@ -93,8 +93,8 @@ func TestAccBitbucketDefaultReviewersCondition_expectRequiredApprovalsError(t *t
 	key := fmt.Sprintf("%v", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccBitbucketDefaultReviewersConditionResourceForProject(key, 2),

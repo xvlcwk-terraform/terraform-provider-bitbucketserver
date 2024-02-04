@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccBitbucketResourceBranchPermission_requiredArgumentsOnly(t *testing.T) {
@@ -23,8 +23,8 @@ func TestAccBitbucketResourceBranchPermission_requiredArgumentsOnly(t *testing.T
 	resourceName := "bitbucketserver_project_branch_permissions.test"
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -75,8 +75,8 @@ func TestAccBitbucketResourceBranchPermission_allArguments(t *testing.T) {
 	resourceName2 := "bitbucketserver_project_branch_permissions.test_2"
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,

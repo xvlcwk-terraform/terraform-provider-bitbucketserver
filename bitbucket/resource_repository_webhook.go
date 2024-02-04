@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 	"strings"
 )
@@ -89,7 +90,7 @@ func resourceRepositoryWebhook() *schema.Resource {
 }
 
 func resourceRepositoryWebhookUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	project := d.Get("project").(string)
 	repository := d.Get("repository").(string)
@@ -116,7 +117,7 @@ func resourceRepositoryWebhookUpdate(d *schema.ResourceData, m interface{}) erro
 }
 
 func resourceRepositoryWebhookCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	project := d.Get("project").(string)
 	repository := d.Get("repository").(string)
@@ -184,7 +185,7 @@ func resourceRepositoryWebhookRead(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceRepositoryWebhookDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%d",
 		d.Get("project").(string),
 		d.Get("repository").(string),
@@ -214,7 +215,7 @@ func getRepositoryWebhookFromId(d *schema.ResourceData, m interface{}) error {
 	repository := d.Get("repository").(string)
 	id := d.Get("webhook_id").(int)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%d",
 		project,
@@ -250,7 +251,7 @@ func getRepositoryWebhookFromList(d *schema.ResourceData, m interface{}) error {
 	repository := d.Get("repository").(string)
 	name := d.Get("name").(string)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks",
 		project,

@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type Plugin struct {
@@ -141,27 +142,13 @@ func resourcePlugin() *schema.Resource {
 			"vendor": {
 				Type:     schema.TypeMap,
 				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"link": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"marketplace_link": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
 			"applied_license": {
 				Type:     schema.TypeList,
 				Computed: true,
-				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"valid": {
@@ -253,7 +240,7 @@ func resourcePlugin() *schema.Resource {
 }
 
 func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
-	provider := m.(*BitbucketServerProvider)
+	provider := m.(*bitbucketTypes.BitbucketServerProvider)
 
 	key := d.Get("key").(string)
 	version := d.Get("version").(string)
@@ -311,7 +298,7 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourcePluginUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	key := d.Get("key").(string)
 
@@ -372,7 +359,7 @@ func resourcePluginRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("key", id)
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/plugins/1.0/%s-key", d.Get("key").(string)))
 	if err != nil {
 		return err
@@ -460,7 +447,7 @@ func resourcePluginExists(d *schema.ResourceData, m interface{}) (bool, error) {
 		key = d.Get("key").(string)
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/plugins/1.0/%s-key",
 		key,
 	))
@@ -477,7 +464,7 @@ func resourcePluginExists(d *schema.ResourceData, m interface{}) (bool, error) {
 }
 
 func resourcePluginDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/plugins/1.0/%s-key",
 		d.Get("key").(string),
 	))
@@ -485,7 +472,7 @@ func resourcePluginDelete(d *schema.ResourceData, m interface{}) error {
 	return err
 }
 
-func readMarketplacePluginVersion(key string, version string, provider *BitbucketServerProvider) (*PluginMarketplaceVersion, error) {
+func readMarketplacePluginVersion(key string, version string, provider *bitbucketTypes.BitbucketServerProvider) (*PluginMarketplaceVersion, error) {
 	marketplaceRequest, err := provider.MarketplaceClient.Get(fmt.Sprintf("/rest/2/addons/%s/versions/name/%s", key, version))
 	if err != nil {
 		return nil, err

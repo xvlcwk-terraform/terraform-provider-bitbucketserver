@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccBitbucketDataProjectPermissionsGroups_simple(t *testing.T) {
@@ -28,8 +28,8 @@ func TestAccBitbucketDataProjectPermissionsGroups_simple(t *testing.T) {
 	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -56,8 +56,8 @@ func TestAccBitbucketDataProjectPermissionsGroups_check_empty(t *testing.T) {
 	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,

@@ -2,13 +2,14 @@ package bitbucket
 
 import (
 	"fmt"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"math/rand"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccBitbucketProject(t *testing.T) {
@@ -50,7 +51,7 @@ func TestAccBitbucketProject(t *testing.T) {
 }
 
 func testAccCheckBitbucketProjectDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*BitbucketServerProvider).BitbucketClient
+	client := testAccProvider.Meta().(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	rs, ok := s.RootModule().Resources["bitbucketserver_project.test"]
 	if !ok {
 		return fmt.Errorf("not found %s", "bitbucketserver_project.test")
