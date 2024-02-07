@@ -6,40 +6,18 @@ unlocks the power of terraform to manage your self-hosted Bitbucket Server insta
 
 ## Installation
 
-### Terraform 0.13+
+### Terraform 1.0+
 
 The provider can be installed and managed automatically by Terraform. Sample `versions.tf` file :
 
 ```hcl
 terraform {
-  required_version = ">= 0.13"
-
   required_providers {
     bitbucketserver = {
       source  = "xvlcwk-terraform/bitbucketserver"
     }
   }
 }
-```
-
-### Terraform 0.12
-
-#### Install latest version
-
-The following one-liner script will fetch the latest provider version and download it to your `~/.terraform.d/plugins` directory.
-
-```bash
-$ mkdir -p ~/.terraform.d/plugins && \
-      curl -Ls https://api.github.com/repos/xvlcwk-terraform/terraform-provider-bitbucketserver/releases/latest \
-      | jq -r ".assets[] | select(.browser_download_url | contains(\"$(uname -s | tr A-Z a-z)\")) | select(.browser_download_url | contains(\"amd64\")) | .browser_download_url" \
-      | xargs -n 1 curl -Lo ~/.terraform.d/plugins/terraform-provider-bitbucketserver.zip && \
-      pushd ~/.terraform.d/plugins/ && \
-      unzip ~/.terraform.d/plugins/terraform-provider-bitbucketserver.zip -d terraform-provider-bitbucketserver-tmp && \
-      mv terraform-provider-bitbucketserver-tmp/terraform-provider-bitbucketserver* . && \
-      chmod +x terraform-provider-bitbucketserver* && \
-      rm -rf terraform-provider-bitbucketserver-tmp && \
-      rm -rf terraform-provider-bitbucketserver.zip && \
-      popd
 ```
 
 #### Install manually
@@ -60,10 +38,20 @@ provider "bitbucketserver" {
 }
 ```
 
+Alternatively you can specify a http-access-token, but please be aware that those aren't able to create other access tokens and are overall limited in their scope.
+
+
+```hcl
+provider "bitbucketserver" {
+  server   = "https://mybitbucket.example.com"
+  token = "BBDC-ODc4NTMyODU1MTI3OnSOs8sHd7EZneuWx2ZiYyF/Xmuj"
+}
+```
+
 ### Authentication
 
 The `username` and `password` specified should be of a user with sufficient privileges to perform the operations you are after.
-Typically this is a user with `SYS_ADMIN` global permissions.
+Typically, this is a user with `SYS_ADMIN` global permissions.
 
 ### Environment Variables
 
@@ -72,6 +60,7 @@ You can also specify the provider configuration using the following env vars:
 * `BITBUCKET_SERVER`
 * `BITBUCKER_USERNAME`
 * `BITBUCKET_PASSWORD`
+* `BITBUCKET_TOKEN`
 
 > Note: The hcl provider configuration takes precedence over the environment variables.
 
