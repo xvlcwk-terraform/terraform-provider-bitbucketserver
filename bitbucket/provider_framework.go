@@ -34,6 +34,7 @@ type BitbucketServerProviderModel struct {
 	Server   types.String `tfsdk:"server"`
 	Username types.String `tfsdk:"username"`
 	Password types.String `tfsdk:"password"`
+	Token    types.String `tfsdk:"token"`
 }
 
 func (p *BitbucketServerProviderFramework) Resources(_ context.Context) []func() resource.Resource {
@@ -71,6 +72,11 @@ func (p *BitbucketServerProviderFramework) Schema(_ context.Context, _ provider.
 				Description: "the password for authentication. Personal access tokens are allowed, but http access token aren't yet",
 				Sensitive:   true,
 			},
+			"token": schema.StringAttribute{
+				Optional:    true,
+				Description: "Token as alternative to the Password. Only use for repository access tokens. Personal access tokens can use the normal basic authentication",
+				Sensitive:   true,
+			},
 		},
 	}
 }
@@ -101,11 +107,16 @@ func (p *BitbucketServerProviderFramework) Configure(ctx context.Context, req pr
 		)
 	}
 
+	token := os.Getenv("BITBUCKET_TOKEN")
+	if data.Token.ValueString() != "" {
+		token = data.Token.ValueString()
+	}
+
 	username := os.Getenv("BITBUCKET_USERNAME")
 	if data.Username.ValueString() != "" {
 		username = data.Username.ValueString()
 	}
-	if username == "" {
+	if username == "" && token == "" {
 		resp.Diagnostics.AddError(
 			"username is required",
 			"username is required and must be provided in the provider config or the BITBUCKET_USERNAME environment variable",
@@ -116,7 +127,7 @@ func (p *BitbucketServerProviderFramework) Configure(ctx context.Context, req pr
 	if data.Password.ValueString() != "" {
 		password = data.Password.ValueString()
 	}
-	if password == "" {
+	if password == "" && token == "" {
 		resp.Diagnostics.AddError(
 			"password is required",
 			"password is required and must be provided in the provider config or the BITBUCKET_PASSWORD environment variable",
@@ -127,6 +138,7 @@ func (p *BitbucketServerProviderFramework) Configure(ctx context.Context, req pr
 		Server:     server,
 		Username:   username,
 		Password:   password,
+		Token:      token,
 		HTTPClient: &http.Client{},
 	}
 

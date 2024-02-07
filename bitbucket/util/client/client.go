@@ -40,6 +40,7 @@ type BitbucketClient struct {
 	Server     string
 	Username   string
 	Password   string
+	Token      string
 	HTTPClient *http.Client
 }
 
@@ -60,7 +61,11 @@ func (c *BitbucketClient) Do(method, endpoint string, payload *bytes.Buffer, con
 		return nil, err
 	}
 
-	req.SetBasicAuth(c.Username, c.Password)
+	if c.Password != "" {
+		req.SetBasicAuth(c.Username, c.Password)
+	} else {
+		req.Header.Add("Authorization", "Bearer "+c.Token)
+	}
 	req.Header.Add("X-Atlassian-Token", "no-check")
 
 	if payload != nil {

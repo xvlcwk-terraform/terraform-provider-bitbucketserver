@@ -18,23 +18,30 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"server": {
-				Required:    true,
+				Optional:    true,
 				Type:        schema.TypeString,
 				DefaultFunc: schema.EnvDefaultFunc("BITBUCKET_SERVER", nil),
 				Description: "The url of your bitbucket instance. For the docker compose instance this is http://localhost:7990",
 			},
 			"username": {
-				Required:    true,
+				Optional:    true,
 				Type:        schema.TypeString,
 				DefaultFunc: schema.EnvDefaultFunc("BITBUCKET_USERNAME", nil),
 				Description: "The username for authentication. If you're using a personal access token use your normal username.",
 			},
 			"password": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("BITBUCKET_PASSWORD", nil),
 				Description: "the password for authentication. Personal access tokens are allowed, but http access token aren't yet",
+			},
+			"token": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("BITBUCKET_TOKEN", nil),
+				Description: "Token as alternative to the Password. Only use for repository access tokens. Personal access tokens can use the normal basic authentication",
 			},
 		},
 		ConfigureContextFunc: providerConfigure,
@@ -91,6 +98,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	username := d.Get("username").(string)
 	password := d.Get("password").(string)
+	token := d.Get("token").(string)
 
 	configErrors := diag.Diagnostics{}
 
@@ -102,7 +110,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				Detail:        "server is required and must be provided in the provider config or the BITBUCKET_SERVER environment variable",
 			})
 	}
-	if username == "" {
+	if username == "" && token == "" {
 		configErrors = append(configErrors,
 			diag.Diagnostic{
 
@@ -111,7 +119,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				Detail:        "username is required and must be provided in the provider config or the BITBUCKET_USERNAME environment variable",
 			})
 	}
-	if password == "" {
+	if password == "" && token == "" {
 		configErrors = append(configErrors,
 			diag.Diagnostic{
 				Severity:      diag.Error,
@@ -128,6 +136,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		Server:     serverSanitized,
 		Username:   username,
 		Password:   password,
+		Token:      token,
 		HTTPClient: &http.Client{},
 	}
 
