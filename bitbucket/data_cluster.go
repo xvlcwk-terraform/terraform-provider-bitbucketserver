@@ -2,7 +2,8 @@ package bitbucket
 
 import (
 	"encoding/json"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 )
 
@@ -73,7 +74,7 @@ func clusterNodeResourceSchema() *schema.Resource {
 }
 
 func dataSourceClusterRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	req, err := client.Get("/rest/api/1.0/admin/cluster")
 
 	if err != nil {

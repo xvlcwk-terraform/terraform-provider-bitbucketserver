@@ -2,7 +2,8 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/client"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,8 +20,8 @@ func TestAccBitbucketResourceGroup_basic(t *testing.T) {
 	`
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -44,8 +45,8 @@ func TestAccBitbucketResourceGroup_DisallowImport(t *testing.T) {
 	createGroup(groupName)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -71,8 +72,8 @@ func TestAccBitbucketResourceGroup_AllowImport(t *testing.T) {
 	createGroup(groupName)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -89,13 +90,13 @@ func createGroup(groupName string) {
 	client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
 }
 
-func newBitbucketClient() *BitbucketClient {
+func newBitbucketClient() *client.BitbucketClient {
 	serverSanitized := os.Getenv("BITBUCKET_SERVER")
 	if strings.HasSuffix(serverSanitized, "/") {
 		serverSanitized = serverSanitized[0 : len(serverSanitized)-1]
 	}
 
-	return &BitbucketClient{
+	return &client.BitbucketClient{
 		Server:     serverSanitized,
 		Username:   os.Getenv("BITBUCKET_USERNAME"),
 		Password:   os.Getenv("BITBUCKET_PASSWORD"),

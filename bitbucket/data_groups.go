@@ -3,7 +3,8 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"net/url"
 )
 
@@ -65,7 +66,7 @@ func dataSourceGroupsRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func readGroups(m interface{}, filter string) ([]string, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resourceURL := "/rest/api/1.0/admin/groups"
 	if filter != "" {

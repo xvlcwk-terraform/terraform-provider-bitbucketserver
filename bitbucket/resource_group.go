@@ -2,7 +2,8 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"log"
 	"net/url"
 )
@@ -33,7 +34,7 @@ func resourceGroup() *schema.Resource {
 }
 
 func resourceGroupCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	groupName := d.Get("name").(string)
 	importIfExists := d.Get("import_if_exists").(bool)
@@ -88,7 +89,7 @@ func resourceGroupUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceGroupDelete(d *schema.ResourceData, m interface{}) error {
 	groupName := d.Get("name").(string)
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s",
 		url.QueryEscape(groupName),
 	))

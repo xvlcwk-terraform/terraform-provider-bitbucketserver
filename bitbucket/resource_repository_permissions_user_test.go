@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccBitbucketResourceRepositoryPermissionsUser(t *testing.T) {
@@ -40,8 +40,8 @@ func TestAccBitbucketResourceRepositoryPermissionsUser(t *testing.T) {
 	configModified := strings.ReplaceAll(config, "REPO_WRITE", "REPO_READ")
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: config,

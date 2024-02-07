@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"strings"
 )
 
@@ -43,7 +44,7 @@ func resourceRepositoryHook() *schema.Resource {
 }
 
 func resourceRepositoryHookUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	project := d.Get("project").(string)
 	repository := d.Get("repository").(string)
@@ -95,7 +96,7 @@ func resourceRepositoryHookRead(d *schema.ResourceData, m interface{}) error {
 	repository := d.Get("repository").(string)
 	hook := d.Get("hook").(string)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks/%s/settings",
 		project,
 		repository,
@@ -119,7 +120,7 @@ func resourceRepositoryHookRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRepositoryHookDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks/%s/enabled",
 		d.Get("project").(string),
 		d.Get("repository").(string),

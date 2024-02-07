@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io"
 	"net/http"
 	"net/url"
@@ -165,7 +166,7 @@ func resourceRepositoryDeployKeyCreate(d *schema.ResourceData, m interface{}) er
 
 	request, err := json.Marshal(keyRequest)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	resp, err := client.Post(fmt.Sprintf("/rest/keys/latest/projects/%s/repos/%s/ssh",
 		url.QueryEscape(d.Get("project").(string)),
 		url.QueryEscape(d.Get("repository").(string)),
@@ -178,7 +179,7 @@ func resourceRepositoryDeployKeyCreate(d *schema.ResourceData, m interface{}) er
 }
 
 func resourceRepositoryDeployKeyRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(fmt.Sprintf("/rest/keys/latest/projects/%s/repos/%s/ssh/%s",
 		url.QueryEscape(d.Get("project").(string)),
@@ -192,7 +193,7 @@ func resourceRepositoryDeployKeyRead(d *schema.ResourceData, m interface{}) erro
 }
 
 func resourceRepositoryDeployKeyDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/keys/latest/projects/%s/repos/%s/ssh/%s",
 		url.QueryEscape(d.Get("project").(string)),
 		url.QueryEscape(d.Get("repository").(string)),

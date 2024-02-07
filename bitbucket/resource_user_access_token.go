@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 )
 
@@ -66,7 +67,7 @@ func resourceUserAccessToken() *schema.Resource {
 }
 
 func resourceUserAccessTokenCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	accessTokenRequest := &AccessTokenRequest{
 		Name:        d.Get("name").(string),
@@ -105,7 +106,7 @@ func resourceUserAccessTokenCreate(d *schema.ResourceData, m interface{}) error 
 }
 
 func resourceUserAccessTokenUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	accessTokenRequest := &AccessTokenRequest{
 		Name:        d.Get("name").(string),
 		Permissions: d.Get("permissions").([]interface{}),
@@ -130,7 +131,7 @@ func resourceUserAccessTokenUpdate(d *schema.ResourceData, m interface{}) error 
 
 func resourceUserAccessTokenRead(d *schema.ResourceData, m interface{}) error {
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	res, err := client.Get(fmt.Sprintf("/rest/access-tokens/1.0/users/%s/%s",
 		d.Get("user").(string),
 		d.Id(),
@@ -160,7 +161,7 @@ func resourceUserAccessTokenRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserAccessTokenExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/access-tokens/1.0/users/%s/%s",
 		d.Get("user").(string),
 		d.Id(),
@@ -178,7 +179,7 @@ func resourceUserAccessTokenExists(d *schema.ResourceData, m interface{}) (bool,
 }
 
 func resourceUserAccessTokenDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/access-tokens/1.0/users/%s/%s",
 		d.Get("user").(string),
 		d.Id(),

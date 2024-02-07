@@ -2,8 +2,9 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"net/url"
 )
 
@@ -33,7 +34,7 @@ func resourceGlobalPermissionsUser() *schema.Resource {
 }
 
 func resourceGlobalPermissionsUserUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Put(fmt.Sprintf("/rest/api/1.0/admin/permissions/users?permission=%s&name=%s",
 		url.QueryEscape(d.Get("permission").(string)),
 		url.QueryEscape(d.Get("user").(string)),
@@ -80,7 +81,7 @@ func resourceGlobalPermissionsUserRead(d *schema.ResourceData, m interface{}) er
 }
 
 func resourceGlobalPermissionsUserDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/admin/permissions/users?name=%s",
 		url.QueryEscape(d.Get("user").(string)),
 	))

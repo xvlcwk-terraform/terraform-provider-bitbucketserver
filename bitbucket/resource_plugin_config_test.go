@@ -16,7 +16,7 @@ package bitbucket
 //
 //	resource.Test(t, resource.TestCase{
 //		PreCheck:  func() { testAccPreCheck(t) },
-//		Providers: testAccProviders,
+//		ProtoV6ProviderFactories: ProviderFactories,
 //		Steps: []resource.TestStep{
 //			{
 //				Config: config,

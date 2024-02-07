@@ -3,8 +3,9 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"net/url"
 	"sort"
 )
@@ -148,7 +149,7 @@ func dataSourceRepositoryHooksRead(d *schema.ResourceData, m interface{}) error 
 }
 
 func readRepositoryHooks(m interface{}, project string, repository string, typeFilter string) ([]RepositoryHook, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks",
 		project,

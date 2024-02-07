@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"log"
 	"strings"
 )
@@ -48,7 +49,7 @@ func newUserGroupFromResource(d *schema.ResourceData) *UserGroup {
 }
 
 func resourceUserGroupCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	type UserGroupRequest struct {
 		User   string   `json:"user,omitempty"`
@@ -113,7 +114,7 @@ func resourceUserGroupDelete(d *schema.ResourceData, m interface{}) error {
 
 	userGroup := newUserGroupFromResource(d)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	type RemoveRequest struct {
 		User  string `json:"context,omitempty"`

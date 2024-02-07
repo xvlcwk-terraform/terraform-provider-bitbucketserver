@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	bitbucketTypes "github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket/util/types"
 	"io/ioutil"
 	"net/url"
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type Reviewer struct {
@@ -292,7 +293,7 @@ func resourceDefaultReviewersConditionCreate(d *schema.ResourceData, m interface
 		return err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Post(getCreateConditionURI(projectKey, repositorySlug), bytes.NewBuffer(bytedata))
 
@@ -326,7 +327,7 @@ func resourceDefaultReviewersConditionRead(d *schema.ResourceData, m interface{}
 		return err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(getReadConditionURI(projectKey, repositorySlug))
 
@@ -371,7 +372,7 @@ func resourceDefaultReviewersConditionExists(d *schema.ResourceData, m interface
 		return false, err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	resp, err := client.Get(getReadConditionURI(projectKey, repositorySlug))
 
@@ -409,7 +410,7 @@ func resourceDefaultReviewersConditionDelete(d *schema.ResourceData, m interface
 		return err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*bitbucketTypes.BitbucketServerProvider).BitbucketClient
 
 	_, err = client.Delete(getDeleteConditionURI(conditionID, projectKey, repositorySlug))
 
