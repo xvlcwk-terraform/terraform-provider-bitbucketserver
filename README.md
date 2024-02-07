@@ -35,8 +35,8 @@ resource "bitbucketserver_repository" "test" {
 
 ### Requirements
 
--	[Terraform](https://www.terraform.io/downloads.html) 0.12.x
--	[Go](https://golang.org/doc/install) 1.11+
+-	[Terraform](https://www.terraform.io/downloads.html) 1.x.x
+-	[Go](https://golang.org/doc/install) 1.21+
     - correctly setup [GOPATH](http://golang.org/doc/code.html#GOPATH
     - add `$GOPATH/bin` to your `$PATH`
 - clone this repository to `$GOPATH/src/github.com/xvlcwk-terraform/terraform-provider-bitbucketserver`
