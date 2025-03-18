@@ -6,7 +6,7 @@ cd ${DIR}
 
 if [ ! -f ${DIR}/docker-compose ]; then
   echo "--> Downloading docker-compose"
-  curl -L https://github.com/docker/compose/releases/download/1.20.1/docker-compose-`uname -s`-`uname -m` > ${DIR}/docker-compose
+  curl -L https://github.com/docker/compose/releases/download/v2.34.0/docker-compose-`uname -s`-`uname -m` > ${DIR}/docker-compose
   chmod +x ${DIR}/docker-compose
 fi
 

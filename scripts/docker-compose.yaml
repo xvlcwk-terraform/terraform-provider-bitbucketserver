@@ -2,7 +2,7 @@ version: '2'
 
 services:
   bitbucket:
-    image: atlassian/bitbucket-server:8.5-ubuntu-jdk11
+    image: atlassian/bitbucket:9.4.2-jdk21
     restart: always
     networks:
       - bridge
