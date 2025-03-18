@@ -15,14 +15,10 @@ import (
 )
 
 type SSHKey struct {
-	ID            int                  `json:"id,omitempty"`
-	Name          string               `json:"name,omitempty"`
-	CreatedDate   jsonTime             `json:"createdDate,omitempty"`
-	UpdatedDate   jsonTime             `json:"updatedDate,omitempty"`
-	URL           string               `json:"url,omitempty"`
-	Active        bool                 `json:"active"`
-	Events        []interface{}        `json:"events"`
-	Configuration WebhookConfiguration `json:"configuration"`
+	ID          int      `json:"id,omitempty"`
+	Name        string   `json:"name,omitempty"`
+	CreatedDate jsonTime `json:"createdDate,omitempty"`
+	UpdatedDate jsonTime `json:"updatedDate,omitempty"`
 }
 
 func resourceRepositoryDeployKey() *schema.Resource {
@@ -57,13 +53,19 @@ func resourceRepositoryDeployKey() *schema.Resource {
 				ForceNew:     true,
 				ValidateFunc: validation.StringInSlice([]string{"REPO_READ", "REPO_WRITE", "REPO_ADMIN"}, false),
 			},
+			"expiry_days": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				ForceNew: true,
+			},
 		},
 	}
 }
 
 type KeyRequestKey struct {
-	Label string `json:"label"`
-	Text  string `json:"text"`
+	Label      string `json:"label"`
+	Text       string `json:"text"`
+	ExpiryDays int    `json:"expiryDays,omitempty"`
 }
 
 type KeyRequest struct {
@@ -73,85 +75,18 @@ type KeyRequest struct {
 
 type KeyResponse struct {
 	Key struct {
-		Id                int    `json:"id"`
-		ExpiryDays        int    `json:"expiryDays"`
-		BitLength         int    `json:"bitLength"`
-		AlgorithmType     string `json:"algorithmType"`
-		CreatedDate       string `json:"createdDate"`
-		Fingerprint       string `json:"fingerprint"`
-		LastAuthenticated string `json:"lastAuthenticated"`
-		Label             string `json:"label"`
-		Text              string `json:"text"`
+		Id          int    `json:"id"`
+		ExpiryDays  int    `json:"expiryDays"`
+		CreatedDate int    `json:"createdDate"`
+		Label       string `json:"label"`
+		Text        string `json:"text"`
 	} `json:"key"`
 	Permission string `json:"permission"`
-	Project    struct {
-		Name        string `json:"name"`
-		Key         string `json:"key"`
-		Id          int    `json:"id"`
-		Type        string `json:"type"`
-		Public      bool   `json:"public"`
-		Avatar      string `json:"avatar"`
-		Description string `json:"description"`
-		Namespace   string `json:"namespace"`
-		Scope       string `json:"scope"`
-	} `json:"project"`
 	Repository struct {
-		Name          string `json:"name"`
-		Id            int    `json:"id"`
-		State         string `json:"state"`
-		Public        bool   `json:"public"`
-		DefaultBranch string `json:"defaultBranch"`
-		HierarchyId   string `json:"hierarchyId"`
-		StatusMessage string `json:"statusMessage"`
-		Archived      bool   `json:"archived"`
-		Forkable      bool   `json:"forkable"`
-		RelatedLinks  struct {
-		} `json:"relatedLinks"`
-		Partition int `json:"partition"`
-		Origin    struct {
-			Name          string `json:"name"`
-			Id            int    `json:"id"`
-			State         string `json:"state"`
-			Public        bool   `json:"public"`
-			DefaultBranch string `json:"defaultBranch"`
-			HierarchyId   string `json:"hierarchyId"`
-			StatusMessage string `json:"statusMessage"`
-			Archived      bool   `json:"archived"`
-			Forkable      bool   `json:"forkable"`
-			RelatedLinks  struct {
-			} `json:"relatedLinks"`
-			Partition   int    `json:"partition"`
-			Description string `json:"description"`
-			Project     struct {
-				Name        string `json:"name"`
-				Key         string `json:"key"`
-				Id          int    `json:"id"`
-				Type        string `json:"type"`
-				Public      bool   `json:"public"`
-				Avatar      string `json:"avatar"`
-				Description string `json:"description"`
-				Namespace   string `json:"namespace"`
-				Scope       string `json:"scope"`
-			} `json:"project"`
-			Scope string `json:"scope"`
-			ScmId string `json:"scmId"`
-			Slug  string `json:"slug"`
-		} `json:"origin"`
-		Description string `json:"description"`
-		Project     struct {
-			Name        string `json:"name"`
-			Key         string `json:"key"`
-			Id          int    `json:"id"`
-			Type        string `json:"type"`
-			Public      bool   `json:"public"`
-			Avatar      string `json:"avatar"`
-			Description string `json:"description"`
-			Namespace   string `json:"namespace"`
-			Scope       string `json:"scope"`
+		Slug    string `json:"slug"`
+		Project struct {
+			Key string `json:"key"`
 		} `json:"project"`
-		Scope string `json:"scope"`
-		ScmId string `json:"scmId"`
-		Slug  string `json:"slug"`
 	} `json:"repository"`
 }
 
@@ -162,6 +97,11 @@ func resourceRepositoryDeployKeyCreate(d *schema.ResourceData, m interface{}) er
 			Text:  d.Get("key").(string),
 		},
 		Permission: d.Get("permission").(string),
+	}
+
+	expiryDays := d.Get("expiry_days")
+	if expiryDays != nil && expiryDays.(int) != 0 {
+		keyRequest.Key.ExpiryDays = expiryDays.(int)
 	}
 
 	request, err := json.Marshal(keyRequest)
@@ -220,6 +160,8 @@ func storeResponse(d *schema.ResourceData, resp *http.Response) error {
 	keyError := store(d, keyResponse, keyResponse.Key.Text, "key")
 	projectError := store(d, keyResponse, keyResponse.Repository.Project.Key, "project")
 	repositoryError := store(d, keyResponse, keyResponse.Repository.Slug, "repository")
+	days := keyResponse.Key.ExpiryDays
+	d.Set("expiry_days", days)
 
 	return errors.Join(labelError, permissionError, keyError, projectError, repositoryError)
 }
