@@ -65,7 +65,7 @@ func resourceRepositoryWebhook() *schema.Resource {
 				ForceNew: false,
 			},
 			"events": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Required: true,
 				ForceNew: false,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -203,7 +203,7 @@ func newWebhookFromResource(d *schema.ResourceData) (Hook *Webhook) {
 		Name:          d.Get("name").(string),
 		URL:           d.Get("webhook_url").(string),
 		Active:        d.Get("active").(bool),
-		Events:        d.Get("events").([]interface{}),
+		Events:        d.Get("events").(*schema.Set).List(),
 		Configuration: *configuration,
 	}
 

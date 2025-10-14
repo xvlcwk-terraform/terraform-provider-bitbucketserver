@@ -33,7 +33,7 @@ resource "bitbucketserver_repository_webhook" "main" {
 * `name` - Required. Name of the webhook.
 * `webhook_url` - Required. The URL of the webhook.
 * `secret` - Optional. Secret used to authenticate the payload.
-* `events` - Required. A list of events to trigger the webhook url.
+* `events` - Required. A set of events to trigger the webhook url. Order does not matter.
 * `active` - Optional. Enable or disable the webhook. Default: true
 
 ## Attribute Reference
